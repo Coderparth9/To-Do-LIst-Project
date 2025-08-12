@@ -104,22 +104,11 @@ function sortTasksByDate() {
     addTaskToDOM(t.task, t.date, t.time);
   });
 }
-/*
 
-function sortTasksByDate() {
-    // Get tasks from localStorage
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    // Sort tasks by date
-    tasks.sort(function(a, b) {
-        return new Date(a.date) - new Date(b.date);
-    });
-    // Save sorted tasks back to localStorage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    // Clear the current task list
-    tasklist.innerHTML = "";
-    // Re-add sorted tasks
-    tasks.forEach(function(t) {
-        addTaskDOM(t.task, t.date, t.time);
-    });
+timeInput.addEventListener("time format change",timeformat);
+/*
+function timeformat(){
+  const timeInpu = JSON.parse(localStorage.getItem("timeinput")) || [];
+
 }
-    */
+*/
