@@ -6,10 +6,16 @@ const timeInput = document.getElementById("time_input");
 const addtask = document.getElementById("add_task");
 const tasklist = document.getElementById("task_list");
 
+dateInput.addEventListener("change", sortTasksByDate);
+
+
+document.addEventListener("DOMContentLoaded", loadTasks, sortTasksByDate);
+
 addtask.addEventListener("click", addTask);
-document.addEventListener("DOMContentLoaded", loadTasks);
+
 
 function addTask() {
+  // Adds a task to the list and saves it to localStorage
   const taskText = taskInput.value.trim();
   const dateText = dateInput.value;
   const timeText = timeInput.value;
@@ -29,61 +35,91 @@ function addTask() {
 
 function addTaskToDOM(taskText, dateText, timeText) {
   const li = document.createElement("li");
-  li.textContent = `${dateText} - ${taskText} - ${timeText} `;
+  li.textContent = `  ${dateText} - ${taskText} - ${timeText} `;
 
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.addEventListener("click", () => {
+  const deleteBtn = document.createElement("button"); //delete button
+  deleteBtn.textContent = `Delete ${taskText}`;
+  deleteBtn.addEventListener("click", () => {
     li.remove();
     deleteTask(taskText, dateText, timeText);
   });
 
-  li.appendChild(deleteButton);
+  li.appendChild(deleteBtn);
   tasklist.appendChild(li);
+
+  const editbtn = document.createElement("button"); //edit button
+  editbtn.textContent = "Edit";
+  editbtn.addEventListener("click", () => {
+    taskInput.value = taskText;
+    dateInput.value = dateText;
+    timeInput.value = timeText;
+    li.remove();
+    deleteTask(taskText, dateText, timeText);
+  });
+  li.appendChild(editbtn);
 }
 
 function saveTask(taskText, dateText, timeText) {
+  // Save task
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.push({ task: taskText, date: dateText, time: timeText });
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function loadTasks() {
+  // Load tasks
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.forEach(t => {
+  tasks.forEach((t) => {
     addTaskToDOM(t.task, t.date, t.time);
   });
 }
 
 function deleteTask(taskText, dateText, timeText) {
+  // Delete task
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks = tasks.filter(t => !(t.task === taskText && t.date === dateText && t.time === timeText));
+  tasks = tasks.filter(
+    (t) => !(t.task === taskText && t.date === dateText && t.time === timeText)
+  );
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+
+function sortdate() {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+}
+ 
+
+//Each task should be listed under the corresponding date heading, as shown in the provided image.
+function sortTasksByDate() {
+  // Sort tasks by date
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  // Clear the current task list and re-add sorted tasks
+  tasklist.innerHTML = "";
+  tasks.forEach((t) => {
+    addTaskToDOM(t.task, t.date, t.time);
+  });
+}
 /*
-Changes I made:
 
-1. loadTasks() → Reads tasks from localStorage and calls addTaskToDOM() for each.
-
-
-2. addTaskToDOM() → A helper function that adds a task to the UI (so you can reuse it for both new and saved tasks).
-
-
-3. deleteTask() → Updates localStorage when a task is deleted.
-
-
-
-With this, your tasks will:
-
-Be saved in localStorage
-
-Reload when the page refreshes
-
-Also be removable both from UI and localStorage
-
-
-
----
-
-If you want, I can also add an "Edit" feature so you can change tasks without deleting them. That would make your to-do list more complete.
-*/
+function sortTasksByDate() {
+    // Get tasks from localStorage
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    // Sort tasks by date
+    tasks.sort(function(a, b) {
+        return new Date(a.date) - new Date(b.date);
+    });
+    // Save sorted tasks back to localStorage
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    // Clear the current task list
+    tasklist.innerHTML = "";
+    // Re-add sorted tasks
+    tasks.forEach(function(t) {
+        addTaskDOM(t.task, t.date, t.time);
+    });
+}
+    */
